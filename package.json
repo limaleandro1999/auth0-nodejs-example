@@ -1,0 +1,20 @@
+{
+  "name": "auth0-nodejs-example",
+  "version": "1.0.0",
+  "description": "An example of how make authentication an authorization with auth0 + express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leandro Lima",
+  "license": "ISC",
+  "devDependencies": {
+    "auth0": "^2.14.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "jwks-rsa": "^1.3.0",
+    "request": "^2.88.0"
+  },
+  "dependencies": {}
+}
