@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const request = require("request");
+const fs = require('fs');
 
 const jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
@@ -21,24 +22,39 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.post('/authenticate', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
     const options = { method: 'POST',
-    url: 'https://studies.auth0.com/oauth/token',
-    headers: { 'content-type': 'application/json' },
-    body: 
-     { grant_type: 'password',
-       username: 'user@email.com',
-       password: 'User123@',
-       audience: 'https://studies-api.com',
-       scope: 'read:sample',
-       client_id: 'zWZHLbQPmQaHir47rqnh5oAXgbn1LGy7',
-       client_secret: 'fUG4ApSpOgO90lBTWtl6TfLt4OCC0T0pph3hoGSvuZ6l9IIAAGD66ZIUnBgJaRFX' },
-    json: true };
+        url: 'https://studies.auth0.com/oauth/token',
+        headers: { 'content-type': 'application/json' },
+        body: { 
+            grant_type: 'password',
+            username: username,
+            password: password,
+            audience: 'https://studies-api.com',
+            scope: 'read:sample',
+            client_id: 'zWZHLbQPmQaHir47rqnh5oAXgbn1LGy7',
+            client_secret: 'fUG4ApSpOgO90lBTWtl6TfLt4OCC0T0pph3hoGSvuZ6l9IIAAGD66ZIUnBgJaRFX' },
+        json: true 
+    };
 
     request(options, function (error, response, body) {
-        if (error) throw new Error(error);
+        if(response.statusCode === 200){
+            try{
+                const cert = fs.readFileSync('public.pem');
+                const decoded = require('jsonwebtoken').verify(body.access_token, cert, {algorithms:['RS256']});
         
-        console.log(body);
-        res.json(body)
+                body.email = decoded['https://myapp.example.com/email'];
+                body.profile = decoded['https://myapp.example.com/profile'];
+                res.status(response.statusCode).json(body)    
+            }catch(error){
+                console.log(error);
+                res.status(500).json({'message': 'Internal Server Error.'});
+            }
+        }else if(response.statusCode === 403){
+            res.status(response.statusCode).json(body)
+        }
     });
 });
 
