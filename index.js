@@ -58,6 +58,29 @@ app.post('/authenticate', (req, res) => {
     });
 });
 
+app.post('/signup', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const profile = req.body.profile;
+
+    const options = { method: 'POST',
+        url: 'https://studies.auth0.com/dbconnections/signup',
+        headers: { 'content-type': 'application/json' },
+        body: { 
+            client_id: 'zWZHLbQPmQaHir47rqnh5oAXgbn1LGy7',
+            connection: 'Username-Password-Authentication', 
+            email: email, 
+            password: password,
+            user_metadata: { profile: profile }    
+        },
+        json: true 
+    };
+
+    request(options, function (error, response, body) {
+        res.status(response.statusCode).json(body);
+    });
+});
+
 app.get('/protected', jwtCheck, (req, res) => {
     res.json({message: 'authorized'})
 });
