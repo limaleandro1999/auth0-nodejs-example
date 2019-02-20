@@ -46,7 +46,8 @@ const request = require('request');
 
 #### Authentication
 
-```
+```javascript
+
 app.post('/authenticate', (req, res) => {
     const username = req.body.username; //Username or email
     const password = req.body.password;
@@ -69,26 +70,29 @@ app.post('/authenticate', (req, res) => {
         res.status(response.statusCode).json(body);
     });
 });
+
 ```
 
 #### Authorization
 
-```
+```javascript
+
 const jwtCheck = jwt({
     secret: jwks.expressJwtSecret({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: "https://studies.auth0.com/.well-known/jwks.json"
+        jwksUri: "https://ISSUER/.well-known/jwks.json"
     }),
-    audience: 'https://studies-api.com',
-    issuer: "https://studies.auth0.com/",
+    audience: 'YOUR_AUDIENCE',
+    issuer: "ISSUER",
     algorithms: ['RS256']
 });
 
 app.get('/protected', jwtCheck, (req, res) => {
     res.json({message: 'authorized'})
 });
+
 ```
 
 ## Built With
