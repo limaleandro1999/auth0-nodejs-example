@@ -20,7 +20,7 @@ A step by step series of examples that tell you how to get a development env run
 
 Install the required modules
 
-```
+```https://ISSUER
 npm install
 ```
 
@@ -54,7 +54,7 @@ app.post('/authenticate', (req, res) => {
     const password = req.body.password;
 
     const options = { method: 'POST',
-        url: 'https://studies.auth0.com/oauth/token',
+        url: 'YOUR_AUHT0_API_URL/oauth/token',
         headers: { 'content-type': 'application/json' },
         body: { 
             grant_type: 'password',
@@ -83,10 +83,10 @@ const jwtCheck = jwt({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: "https://ISSUER/.well-known/jwks.json"
+        jwksUri: "YOUR_AUHT0_API_URL/.well-known/jwks.json"
     }),
     audience: 'YOUR_AUDIENCE',
-    issuer: "ISSUER",
+    issuer: 'ISSUER',
     algorithms: ['RS256']
 });
 
