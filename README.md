@@ -30,6 +30,67 @@ And then
 node index.js
 ```
 
+### Tutorial
+
+#### Requires
+
+```
+
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const jwt = require('express-jwt');
+const jwks = require('jwks-rsa');
+const request = require('request');
+```
+
+#### Authentication
+
+```
+app.post('/authenticate', (req, res) => {
+    const username = req.body.username; //Username or email
+    const password = req.body.password;
+
+    const options = { method: 'POST',
+        url: 'https://studies.auth0.com/oauth/token',
+        headers: { 'content-type': 'application/json' },
+        body: { 
+            grant_type: 'password',
+            username: username,
+            password: password,
+            audience: YOUR_AUDIENCE,
+            scope: 'read:sample',
+            client_id: YOUR_CLIENT_ID,
+            client_secret: YOUR_CLIENT_SECRET },
+        json: true 
+    };
+
+    request(options, function (error, response, body) {
+        res.status(response.statusCode).json(body);
+    });
+});
+```
+
+#### Authorization
+
+```
+const jwtCheck = jwt({
+    secret: jwks.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: "https://studies.auth0.com/.well-known/jwks.json"
+    }),
+    audience: 'https://studies-api.com',
+    issuer: "https://studies.auth0.com/",
+    algorithms: ['RS256']
+});
+
+app.get('/protected', jwtCheck, (req, res) => {
+    res.json({message: 'authorized'})
+});
+```
+
 ## Built With
 
 * [Node.js](https://nodejs.org)
