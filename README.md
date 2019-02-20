@@ -34,7 +34,7 @@ node index.js
 
 #### Requires
 
-```
+```javascript
 
 const express = require('express');
 const app = express();
@@ -42,6 +42,7 @@ const bodyParser = require('body-parser');
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const request = require('request');
+
 ```
 
 #### Authentication
